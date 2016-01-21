@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Game Chooser</title>
+
+    <link rel="stylesheet" type="text/css" href="randomTable.css">
+
+    <script src="jquery-2.2.0.min.js"></script>
+    <script src="randomTable.js"></script>
+</head>
+<body>
+    <h1>Random Game Chooser</h1>
+    <div id="formContainerDiv">
+        <form action="gameListHandler.php" method="post" id="randomForm">
+            Enter requirements of your random game: <br>
+            <input type="text" name="genre" placeholder="Genre"><br>
+            <input type="text" name="metacritic" placeholder="Metacritic at least"><br>
+            <input type="text" name="recommendations" placeholder="Minimum Recommendations"><br>
+            <input type="text" name="timetobeat" placeholder="Time to beat"><br>
+            <select name="random" style="visibility: hidden"><option value="random" selected="selected">Random</option></select><br>
+            <input class="myButton" type="submit" value="Randomize">
+        </form>
+        <form action="gameTable.html">
+            <input class="myButton" type="submit" value="Back">
+        </form>
+    </div>
+
+    <table id="randomTable" style="margin-top: 40px">
+        <thead>
+        <tr>
+            <th>Image</th>
+            <th id="name" class="sortButton">Name</th>
+            <th id="genre" class="sortButton">Genre</th>
+            <th id="metacritic" class="sortButton">Metacrtic</th>
+            <th>How Long To Beat</th>
+            <th id="recommendations" class="sortButton">Recommendations</th>
+            <th>Löschen</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</body>
+</html>

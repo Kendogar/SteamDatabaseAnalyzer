@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert New Game</title>
+
+    <link rel="stylesheet" type="text/css" href="insertTable.css">
+
+</head>
+<body>
+    <h1>Insert New Game</h1>
+    <div id="formContainerDiv">
+        <form action="insertGameHandler.php" method="post">
+            <input type="text" name="name" placeholder="Name"><br>
+            <input type="text" name="genre" placeholder="Genre"><br>
+            <input type="text" name="metacritic" placeholder="Metacritic score"><br>
+            <input type="text" name="timetobeat" placeholder="How Long To Beat"><br>
+            <input class="myButton" type="submit" value="Insert"><br>
+        </form>
+        <form action="gameTable.html">
+            <input class="myButton" type="submit" value="Back">
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Game Database</title>
+
+    <link rel="stylesheet" type="text/css" href="gameTable.css">
+
+    <script src="jquery-2.2.0.min.js"></script>
+    <script src="jquery.tablesorter.min.js"></script>
+    <script src="gameTable.js"></script>
+</head>
+<body>
+<h1>My Video Game Database</h1>
+<div id="formContainerDiv">
+    <div id="webApiDiv" class="formDiv">
+        <form action="steamApiHandler.php" method="post" id="steamApiForm">
+            Import Data from Steam Web API:<br>
+            <input type="text" name="webAPI">
+            <input type="submit" value="Import" class="myButton">
+        </form>
+    </div>
+    <div id="inner">
+        <div id="insertDiv" class="formDiv">
+            <form action="insertTable.html">
+                <input type="submit" value="New Game" class="myButton">
+            </form>
+        </div>
+        <div id="randomDiv" class="formDiv">
+            <form action="randomTable.html">
+                <input type="submit" value="Random Game" class="myButton">
+            </form>
+        </div>
+    </div>
+    <div id="filterDiv" class="formDiv">
+        <form action="gameListHandler.php" method="post" id="ajaxFilterForm">
+            Filter Game List: <br>
+            <input type="text" name="name" class="inputField" placeholder="Name"><br>
+            <input type="text" name="genre" class="inputField" placeholder="Genre"><br>
+            <input type="text" name="metacritic" class="inputField" placeholder="Metacritic at least"><br>
+            <input type="text" name="recommendations" class="inputField" placeholder="Minimum recommendations"><br>
+            <input type="submit" value="Filter" class="myButton" id="filterButton"><br>
+        </form>
+    </div>
+</div>
+<table id="myTable" class="tablesorter">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th id="name" class="sortButton">Name</th>
+            <th id="genre" class="sortButton">Genre</th>
+            <th id="metacritic" class="sortButton">Metacrtic</th>
+            <th>How Long To Beat</th>
+            <th id="recommendations" class="sortButton">Recommendations</th>
+            <th id="delete">Löschen</th>
+            <th>Played?</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>
+
