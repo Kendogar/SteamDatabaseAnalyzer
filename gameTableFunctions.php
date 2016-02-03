@@ -27,7 +27,43 @@ class gameTableFunctions {
             }
         }
         foreach($ownedGamesArray as $ownedGame) {
-            $this->addCustomGame($ownedGame);
+            $this->addCustomGameWithoutCheck(substr($ownedGame,0,strlen($ownedGame)-1));
+        }
+    }
+
+    function addCustomGameWithoutCheck($postName) {
+        $servername = "localhost:3306";
+        $username = "root";
+        $password = "";
+        $dbname = "steamgames";
+
+        $nameString = $postName;
+        $type = "game";
+        $genreString = "";
+        $header_image = "";
+        $metacritic = "";
+        $recommendations = "iso file";
+        $timetobeat = $this->getDataFromHowlongtobeat($nameString);
+
+
+        if (!$this->checkDatabaseByName(trim($nameString))) {
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+            $nameString = str_replace("'", "", $nameString);
+
+            $sql = "INSERT INTO games (name, type, header_image, genres, recommendations, timetobeat, metacritic, played, appid)
+                VALUES ('".$nameString."', '".$type."', '".$header_image."', '".$genreString."', '".$recommendations."', '".$timetobeat."', '".$metacritic."', 'no',".rand(1000000,10000000).")";
+            if ($conn->query($sql) === TRUE) {
+                echo "Record updated successfully";
+            } else {
+                echo "Error updating record: " . $conn->error;
+            }
+            $conn->close();
+        } else {
+            echo "already in database";
         }
     }
 
@@ -81,8 +117,8 @@ class gameTableFunctions {
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            $sql = "INSERT INTO games (name, type, header_image, genres, recommendations, timetobeat, metacritic, played)
-                VALUES ('".$nameString."', '".$type."', '".$header_image."', '".$genreString."', '".$recommendations."', '".$timetobeat."', '".$metacritic."', 'no')";
+            $sql = "INSERT INTO games (name, type, header_image, genres, recommendations, timetobeat, metacritic, played, appid)
+                VALUES ('".$nameString."', '".$type."', '".$header_image."', '".$genreString."', '".$recommendations."', '".$timetobeat."', '".$metacritic."', 'no',".rand(1000000,10000000).")";
             if ($conn->query($sql) === TRUE) {
                 echo "Record updated successfully";
             } else {
@@ -110,7 +146,7 @@ class gameTableFunctions {
 
         $gameTitle = str_replace("'", "''", $gameTitle);
 
-        $query = "SELECT name from games WHERE name LIKE '$gameTitle'";
+        $query = "SELECT name from games WHERE UPPER(name) LIKE UPPER('$gameTitle')";
 
         //echo $query."<br>";
 
