@@ -10,7 +10,28 @@ require 'Unirest.php';
 
 class gameTableFunctions {
 
-    function addCustomGame($postName, $postGenre, $postMetacritic, $postTimetobeat) {
+    function extractGamesFromList($listName) {
+        $file = fopen($listName, "r");
+        $tempArray = array();
+
+        while (!feof($file)) {
+            $tempArray[] = fgets($file);
+        }
+        fclose($file);
+
+        $ownedGamesArray = array();
+
+        foreach($tempArray as $potentialGame) {
+            if(substr($potentialGame,0,2) == "--"){
+                $ownedGamesArray[] = substr($potentialGame, 3);
+            }
+        }
+        foreach($ownedGamesArray as $ownedGame) {
+            $this->addCustomGame($ownedGame);
+        }
+    }
+
+    function addCustomGame($postName, $postGenre = "", $postMetacritic = "", $postTimetobeat = "") {
         $servername = "localhost:3306";
         $username = "root";
         $password = "";
