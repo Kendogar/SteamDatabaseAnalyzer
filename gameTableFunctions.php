@@ -200,7 +200,7 @@ class gameTableFunctions {
         return $gameInDB;
     }
 
-    function updateDatabase($gameArray) {
+    function updateDatabase($gameArray, $doskir = "") {
         $servername = "localhost:3306";
         $username = "root";
         $password = "";
@@ -217,7 +217,14 @@ class gameTableFunctions {
         $recommendationString = "";
         $metacriticString = "";
         $timeToBeatString = "";
+        $doskirString = "";
         $nameString = str_replace("'", "''", $gameArray['name']);
+
+        if($doskir == "yes") {
+            $doskirString = "yes";
+        } else {
+            $doskirString = "no";
+        }
 
         if(array_key_exists('metacritic', $gameArray) && is_array($gameArray)) {
             $metacriticString = $gameArray['metacritic'];
@@ -240,8 +247,10 @@ class gameTableFunctions {
 
         //echo "updating db with game: ".$nameString."<br>";
 
-        $sql = "INSERT INTO games (name, type, header_image, genres, recommendations, timetobeat, metacritic, appid, played)
-                VALUES ('".$nameString."', '".$gameArray['type']."', '".$gameArray['header_image']."', '".$genreString."', '".$recommendationString."', '".$timeToBeatString."', '".$metacriticString."', '".$gameArray['appId']."', 'no')";
+
+
+        $sql = "INSERT INTO games (name, type, header_image, genres, recommendations, timetobeat, metacritic, appid, played, doskir)
+                VALUES ('".$nameString."', '".$gameArray['type']."', '".$gameArray['header_image']."', '".$genreString."', '".$recommendationString."', '".$timeToBeatString."', '".$metacriticString."', '".$gameArray['appId']."', 'no','".$doskirString."')";
         if ($conn->query($sql) === TRUE) {
             echo "Record updated successfully<br>";
         } else {
@@ -303,9 +312,9 @@ class gameTableFunctions {
         $conn->close();
     }
 
-    function getGameListFromApiKey($key) {
+    function getGameListFromApiKey($key, $id) {
 
-        $url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=".$key."&steamid=76561197960434622&include_appinfo=1&include_played_free_games=0&format=json";
+        $url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=".$key."&steamid=".$id."&include_appinfo=1&include_played_free_games=0&format=json";
         $json = file_get_contents($url);
         $obj = json_decode($json, true);
         $response = $obj['response'];
@@ -325,7 +334,7 @@ class gameTableFunctions {
         return $gameCount;
     }
 
-    function getDetailedGameInfo($appid) {
+    function getDetailedGameInfo($appid, $doskir = "") {
 
         $infoArray = array();
 
@@ -353,34 +362,34 @@ class gameTableFunctions {
             echo "Info retrieved - checking if name is in db: ".$infoArray['name']. "<br>";
 
             if (!$this->checkDatabaseByName($infoArray['name'])) {
-                $this->updateDatabase($infoArray);
+                $this->updateDatabase($infoArray, $doskir);
             }
         }
         return $infoArray;
     }
 
-    function updateSteamGameList($key) {
+    function updateSteamGameList($key, $id, $doskir = "") {
 
         $infoOnAllGames = array();
-        //echo "Retrieving Game List from Steam Web API <br>";
+        // echo "Retrieving Game List from Steam Web API <br>";
 
-        $games = $this->getGameListFromApiKey($key);
+        $games = $this->getGameListFromApiKey($key, $id);
 
-        //echo "Iterating over Game List <br>";
+        // echo "Iterating over Game List <br>";
         $counter = 0;
 
         foreach($games as $game) {
-           // echo "<br><br>***************************************************<br>";
-           // echo "Checking Game Nr ".$counter." with appid: ".$game['appid']."<br>";
+            // echo "<br><br>***************************************************<br>";
+            // echo "Checking Game Nr ".$counter." with appid: ".$game['appid']."<br>";
 
             if (!$this->checkDatabaseByAppId($game['appid'])){
 
-                //echo "Game not in DB - retrieving info <br>";
+                echo "Game not in DB - retrieving info <br>";
 
-                $infoOnAllGames[] = $this->getDetailedGameInfo($game['appid']);
+                $infoOnAllGames[] = $this->getDetailedGameInfo($game['appid'], $doskir);
                 sleep(2);
             } else {
-                //echo "Not updating, game is in db<br>";
+                echo "Not updating, game is in db<br>";
             }
 
             $counter++;
