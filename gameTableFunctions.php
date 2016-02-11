@@ -200,7 +200,7 @@ class gameTableFunctions {
         return $gameInDB;
     }
 
-    function updateDatabase($gameArray, $doskir = "") {
+    function updateDatabase($gameArray, $owner = "") {
         $servername = "localhost:3306";
         $username = "root";
         $password = "";
@@ -217,13 +217,18 @@ class gameTableFunctions {
         $recommendationString = "";
         $metacriticString = "";
         $timeToBeatString = "";
-        $doskirString = "";
+        $ownerString = "";
         $nameString = str_replace("'", "''", $gameArray['name']);
 
-        if($doskir == "yes") {
-            $doskirString = "yes";
-        } else {
-            $doskirString = "no";
+        switch($owner) {
+            case "markus":
+                $ownerString = ", 'no', 'yes')";
+                break;
+            case "doskir":
+                $ownerString = ", 'yes', 'no')";
+                break;
+            default:
+                $ownerString = ", 'no', 'no')";
         }
 
         if(array_key_exists('metacritic', $gameArray) && is_array($gameArray)) {
@@ -249,8 +254,10 @@ class gameTableFunctions {
 
 
 
-        $sql = "INSERT INTO games (name, type, header_image, genres, recommendations, timetobeat, metacritic, appid, played, doskir)
-                VALUES ('".$nameString."', '".$gameArray['type']."', '".$gameArray['header_image']."', '".$genreString."', '".$recommendationString."', '".$timeToBeatString."', '".$metacriticString."', '".$gameArray['appId']."', 'no','".$doskirString."')";
+        $sql = "INSERT INTO games (name, type, header_image, genres, recommendations, timetobeat, metacritic, appid, played, doskir, markus)
+                VALUES ('".$nameString."', '".$gameArray['type']."', '".$gameArray['header_image']."', '".$genreString."', '".$recommendationString."', '".$timeToBeatString."', '".$metacriticString."', '".$gameArray['appId']."', 'no'";
+        $sql .= $ownerString;
+
         if ($conn->query($sql) === TRUE) {
             echo "Record updated successfully<br>";
         } else {
@@ -334,7 +341,7 @@ class gameTableFunctions {
         return $gameCount;
     }
 
-    function getDetailedGameInfo($appid, $doskir = "") {
+    function getDetailedGameInfo($appid, $owner = "") {
 
         $infoArray = array();
 
@@ -362,13 +369,13 @@ class gameTableFunctions {
             echo "Info retrieved - checking if name is in db: ".$infoArray['name']. "<br>";
 
             if (!$this->checkDatabaseByName($infoArray['name'])) {
-                $this->updateDatabase($infoArray, $doskir);
+                $this->updateDatabase($infoArray, $owner);
             }
         }
         return $infoArray;
     }
 
-    function updateSteamGameList($key, $id, $doskir = "") {
+    function updateSteamGameList($key, $id, $owner = "") {
 
         $infoOnAllGames = array();
         // echo "Retrieving Game List from Steam Web API <br>";
@@ -386,7 +393,7 @@ class gameTableFunctions {
 
                 echo "Game not in DB - retrieving info <br>";
 
-                $infoOnAllGames[] = $this->getDetailedGameInfo($game['appid'], $doskir);
+                $infoOnAllGames[] = $this->getDetailedGameInfo($game['appid'], $owner);
                 sleep(2);
             } else {
                 echo "Not updating, game is in db<br>";

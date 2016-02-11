@@ -12,7 +12,7 @@ $requestHandler = new gameTableFunctions();
 
 if (isset($_POST['webAPI'])){
     if ($_POST['webAPI'] != ""){
-        $requestHandler->updateSteamGameList($_POST['webAPI'],$_POST['id'], $_POST['doskir']);
+        $requestHandler->updateSteamGameList($_POST['webAPI'],$_POST['id'], $_POST['owner']);
         print_r($_POST['webAPI']);
     }
 }
