@@ -98,12 +98,18 @@ class gameListHandler
                                 <td><button type='button' class='myButton deleteButton' name='".$resultGame['name']."'>Delete</button></td>";
             if(!$random) {
                 if($resultGame['played'] == "no") {
-                    $htmlTable .= "<td><button type='button' class='myButton playedButton' name='".$resultGame['name']."'>Done</button></td><td>".$resultGame['doskir']."</td><td>".$resultGame['markus']."</td></tr>";
+                    $htmlTable .= "<td><button type='button' class='myButton playedButton' name='".$resultGame['name']."'>Done</button></td>";
                 } else {
-                    $htmlTable .= "<td>Yes</td><td>".$resultGame['doskir']."</td><td>".$resultGame['markus']."</td></tr>";
+                    $htmlTable .= "<td>Yes</td>";
                 }
+            }
+
+            if($resultGame['doskir'] == "yes") {
+                $htmlTable .= "<td>Doskir</td></tr>";
+            } elseif ($resultGame['markus'] == "yes") {
+                $htmlTable .= "<td>Markus</td></tr>";
             } else {
-                $htmlTable .= "<td>".$resultGame['doskir']."</td><td>".$resultGame['markus']."</td></tr>";
+                $htmlTable .= "<td>Lars</td></tr>";
             }
         }
 
